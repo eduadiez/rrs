@@ -316,7 +316,7 @@ impl<'a, M: Memory> InstructionExecutor<'a, M> {
 
         match trap {
             InstructionTrap::Interrupt(interrupt_num) => {
-                self.hart_state.csr_set.mcause.cause = interrupt_num | 0x80000000;
+                self.hart_state.csr_set.mcause.cause = interrupt_num | 0x1000_0000;
                 self.hart_state.csr_set.mtval.val = 0;
 
                 if self.hart_state.csr_set.mtvec.vectored_mode {

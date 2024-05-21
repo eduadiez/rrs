@@ -58,9 +58,9 @@ fn process_arguments(args: &ArgMatches) -> Result<CliOpts, String> {
     let mut new_opts = CliOpts::default();
 
     new_opts.binary_file = args.value_of("binary_file").unwrap().to_string();
-    new_opts.mem_size = process_u32_arg(args, "mem_size", 16, 0x100000)?;
-    new_opts.mem_base = process_u32_arg(args, "mem_base", 16, 0x100000)?;
-    new_opts.load_addr = process_u32_arg(args, "load_addr", 16, 0x100000)?;
+    new_opts.mem_size = process_u32_arg(args, "mem_size", 16, 0x7800_0000)?;
+    new_opts.mem_base = process_u32_arg(args, "mem_base", 16, 0x80000000)?;
+    new_opts.load_addr = process_u32_arg(args, "load_addr", 16, 0x80000000)?;
     new_opts.start_addr = process_u32_arg(args, "start_addr", 16, new_opts.load_addr)?;
     new_opts.log_filename = args.value_of("log_filename").map(|s| s.to_string());
     new_opts.char_out_filename = args.value_of("char_out_filename").map(|s| s.to_string());
@@ -160,7 +160,7 @@ fn setup_memory_space(cli_opts: &CliOpts) -> Result<MemorySpace, String> {
 
     mem_space
         .add_memory(
-            0x80000000,
+            0x1000_0000,
             0x4,
             Box::new(CharOutputterDevice::new(
                 cli_opts.char_out_filename.as_deref(),
@@ -186,7 +186,7 @@ fn setup_sim_environment(args: &ArgMatches) -> Result<SimEnvironment, String> {
 
     sim_environment.sim_ctrl_dev_idx = sim_environment
         .memory_space
-        .add_memory(0x80000004, 0x4, Box::new(SimulationCtrlDevice::new()))
+        .add_memory(0x100_000, 0x4, Box::new(SimulationCtrlDevice::new()))
         .expect("Adding simulation control device is expected to succeed");
 
     sim_environment.hart_state.pc = cli_opts.start_addr;

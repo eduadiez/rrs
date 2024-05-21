@@ -355,7 +355,7 @@ impl CSR for MCause {
     }
 
     fn write(&mut self, val: u32) {
-        if val & 0x80000000 != 0 {
+        if val & 0x1000_0000 != 0 {
             // For interrupt causes accept any value
             self.cause = val;
         } else {
